@@ -2,14 +2,11 @@ package graphql
 
 import (
 	"net/http"
+	"user/internal/transports"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/labstack/echo/v4"
 )
-
-type Router interface {
-	Populate()
-}
 
 type router struct {
 	group  *echo.Group
@@ -17,7 +14,7 @@ type router struct {
 	pg     http.HandlerFunc
 }
 
-func NewGraphqlRouter(g *echo.Group, srv *handler.Server, pg http.HandlerFunc) Router {
+func NewGraphqlRouter(g *echo.Group, srv *handler.Server, pg http.HandlerFunc) transports.HttpRouter {
 	return &router{g, srv, pg}
 }
 
