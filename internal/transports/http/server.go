@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"user/internal/transports/http/graphql"
 	"user/internal/transports/http/graphql/graph"
 
@@ -11,6 +12,7 @@ import (
 
 type Server interface {
 	Run() error
+	Shutdown(ctx context.Context) error
 }
 
 type server struct {
@@ -27,6 +29,10 @@ func (s *server) Run() error {
 	s.injectGraphqlRoutes(s.server)
 
 	return s.server.Start(":8000")
+}
+
+func (s *server) Shutdown(ctx context.Context) error {
+	return s.server.Shutdown(ctx)
 }
 
 func (s *server) injectGraphqlRoutes(e *echo.Echo) {

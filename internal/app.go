@@ -1,9 +1,18 @@
 package internal
 
 import (
+	"context"
+	"errors"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"user/internal/container"
 	"user/internal/infrastructure/config"
-	"user/internal/transports/http"
+	httpTransport "user/internal/transports/http"
 )
 
 type Application interface {
@@ -32,7 +41,36 @@ func NewApp() (Application, error) {
 }
 
 func (a *app) Run() error {
-	server := http.NewServer()
+	server := httpTransport.NewServer()
 
-	return server.Run()
+	serverError := make(chan error, 1)
+	go func() {
+		if err := server.Run(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			serverError <- err
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+
+	select {
+	case err := <-serverError:
+		return err
+	case <-quit:
+	}
+
+	log.Println("Shutting down...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		log.Printf("Http server shutdown error: %v", err)
+	}
+
+	if err := a.container.Close(); err != nil {
+		log.Printf("Database close error: %v", err)
+	}
+
+	return nil
 }

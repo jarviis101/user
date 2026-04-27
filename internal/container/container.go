@@ -7,6 +7,7 @@ import (
 )
 
 type Container interface {
+	Close() error
 }
 
 type container struct {
@@ -21,4 +22,8 @@ func NewContainer(config config.Config) (Container, error) {
 	}
 
 	return &container{connection}, nil
+}
+
+func (c *container) Close() error {
+	return c.connection.Close()
 }
