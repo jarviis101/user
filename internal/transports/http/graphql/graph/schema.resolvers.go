@@ -14,7 +14,7 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUser) (*model.User, error) {
-	user, err := r.container.UserCreator.Store(input.FirstName, input.LastName, input.Email, input.Phone)
+	user, err := r.services.UserCreator().Store(input.FirstName, input.LastName, input.Email, input.Phone)
 
 	if err != nil {
 		return nil, err

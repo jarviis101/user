@@ -1,6 +1,6 @@
 package graph
 
-import "user/internal/container"
+import "user/internal/app/service"
 
 // This file will not be regenerated automatically.
 //
@@ -10,10 +10,14 @@ import "user/internal/container"
 
 //go:generate go run github.com/99designs/gqlgen generate
 
-type Resolver struct {
-	container *container.Container
+type ResolverService interface {
+	UserCreator() service.UserCreator
 }
 
-func NewResolver(container *container.Container) *Resolver {
-	return &Resolver{container}
+type Resolver struct {
+	services ResolverService
+}
+
+func NewResolver(services ResolverService) *Resolver {
+	return &Resolver{services}
 }
