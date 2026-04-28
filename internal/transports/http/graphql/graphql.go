@@ -3,6 +3,7 @@ package graphql
 import (
 	"net/http"
 	"user/internal/transports"
+	"user/internal/transports/http/middleware"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/labstack/echo/v4"
@@ -20,7 +21,7 @@ func NewGraphqlRouter(g *echo.Group, srv *handler.Server, pg http.HandlerFunc) t
 
 func (r *router) Populate() {
 	r.group.Add("GET", "/graphql", r.playground)
-	r.group.Add("POST", "/query", r.query)
+	r.group.Add("POST", "/query", r.query, middleware.Auth("s3cr3t"))
 }
 
 func (r *router) query(c echo.Context) error {
