@@ -16,3 +16,6 @@ migration-status:
 
 generate:
 	go generate ./...
+
+lint:
+	golangci-lint run
