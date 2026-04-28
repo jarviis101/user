@@ -1,5 +1,7 @@
 package graph
 
+import "user/internal/container"
+
 // This file will not be regenerated automatically.
 //
 // It serves as dependency injection for your app, add any dependencies you require
@@ -8,4 +10,10 @@ package graph
 
 //go:generate go run github.com/99designs/gqlgen generate
 
-type Resolver struct{}
+type Resolver struct {
+	container *container.Container
+}
+
+func NewResolver(container *container.Container) *Resolver {
+	return &Resolver{container}
+}

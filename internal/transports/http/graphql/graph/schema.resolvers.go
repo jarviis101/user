@@ -8,12 +8,25 @@ package graph
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"user/internal/transports/http/graphql/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	user, err := r.container.UserCreator.Store(input.FirstName, input.LastName, input.Email, input.Phone)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		ID:        strconv.FormatInt(user.ID, 10),
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Phone:     user.Phone,
+	}, nil
 }
 
 // Users is the resolver for the users field.

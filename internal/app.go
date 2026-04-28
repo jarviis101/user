@@ -21,7 +21,7 @@ type Application interface {
 
 type app struct {
 	config    *config.Config
-	container container.Container
+	container *container.Container
 }
 
 func NewApp() (Application, error) {
@@ -41,7 +41,7 @@ func NewApp() (Application, error) {
 }
 
 func (a *app) Run() error {
-	server := httpTransport.NewServer()
+	server := httpTransport.NewServer(a.container)
 
 	serverError := make(chan error, 1)
 	go func() {

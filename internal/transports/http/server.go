@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"user/internal/container"
 	"user/internal/transports/http/graphql"
 	"user/internal/transports/http/graphql/graph"
 
@@ -16,13 +17,14 @@ type Server interface {
 }
 
 type server struct {
-	server *echo.Echo
+	server    *echo.Echo
+	container *container.Container
 }
 
-func NewServer() Server {
+func NewServer(container *container.Container) Server {
 	s := echo.New()
 
-	return &server{s}
+	return &server{s, container}
 }
 
 func (s *server) Run() error {
@@ -36,7 +38,9 @@ func (s *server) Shutdown(ctx context.Context) error {
 }
 
 func (s *server) injectGraphqlRoutes(e *echo.Echo) {
-	config := graph.Config{Resolvers: &graph.Resolver{}}
+	resolver := graph.NewResolver(s.container)
+	config := graph.Config{Resolvers: resolver}
+
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(config))
 	playground := playground.Handler("GraphQL playground", "/query")
 
