@@ -9,6 +9,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"user/internal/app/entity"
 	"user/internal/transports/http/graphql/graph/model"
 )
 
@@ -36,7 +37,31 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	userId, err := strconv.ParseInt(id, 10, 64)
+
+	if err != nil {
+		return nil, err
+	}
+
+	users, err := r.services.UserProvider().ByCriteria(entity.UserFilter{ID: &userId})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(users) == 0 {
+		return nil, nil
+	}
+
+	user := users[0]
+
+	return &model.User{
+		ID:        strconv.FormatInt(user.ID, 10),
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+		Email:     user.Email,
+		Phone:     user.Phone,
+	}, nil
 }
 
 // Mutation returns MutationResolver implementation.

@@ -12,6 +12,7 @@ import "user/internal/app/service"
 
 type ResolverService interface {
 	UserCreator() service.UserCreator
+	UserProvider() service.UserProvider
 }
 
 type Resolver struct {

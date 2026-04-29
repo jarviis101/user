@@ -9,8 +9,9 @@ import (
 )
 
 type Container struct {
-	connection  *sql.DB
-	userCreator service.UserCreator
+	connection   *sql.DB
+	userCreator  service.UserCreator
+	userProvider service.UserProvider
 }
 
 func NewContainer(config config.Config) (*Container, error) {
@@ -22,12 +23,17 @@ func NewContainer(config config.Config) (*Container, error) {
 
 	userRepository := repository.NewUserRepository(connection)
 	userCreator := service.NewUserCreator(userRepository)
+	userProvider := service.NewUserProvider(userRepository)
 
-	return &Container{connection, userCreator}, nil
+	return &Container{connection, userCreator, userProvider}, nil
 }
 
 func (c *Container) UserCreator() service.UserCreator {
 	return c.userCreator
+}
+
+func (c *Container) UserProvider() service.UserProvider {
+	return c.userProvider
 }
 
 func (c *Container) Close() error {
