@@ -14,7 +14,7 @@ import (
 
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUser) (*model.User, error) {
-	user, err := r.services.UserCreator().Store(input.FirstName, input.LastName, input.Email, input.Phone)
+	user, err := r.services.UserCreator().Store(ctx, input.FirstName, input.LastName, input.Email, input.Phone)
 
 	if err != nil {
 		return nil, err
@@ -31,7 +31,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	users, err := r.services.UserProvider().ByCriteria(entity.UserFilter{})
+	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{})
 
 	if err != nil {
 		return nil, err
@@ -67,7 +67,7 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 		return nil, err
 	}
 
-	users, err := r.services.UserProvider().ByCriteria(entity.UserFilter{ID: &userId})
+	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{ID: &userId})
 
 	if err != nil {
 		return nil, err

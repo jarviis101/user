@@ -1,12 +1,13 @@
 package service
 
 import (
+	"context"
 	"user/internal/app/entity"
 	"user/internal/app/repository"
 )
 
 type UserProvider interface {
-	ByCriteria(filter entity.UserFilter) ([]entity.User, error)
+	ByCriteria(ctx context.Context, filter entity.UserFilter) ([]entity.User, error)
 }
 
 type userProvider struct {
@@ -17,6 +18,6 @@ func NewUserProvider(repo repository.UserRepository) UserProvider {
 	return &userProvider{repo: repo}
 }
 
-func (f *userProvider) ByCriteria(filter entity.UserFilter) ([]entity.User, error) {
-	return f.repo.FindByCriteria(filter)
+func (f *userProvider) ByCriteria(ctx context.Context, filter entity.UserFilter) ([]entity.User, error) {
+	return f.repo.FindByCriteria(ctx, filter)
 }

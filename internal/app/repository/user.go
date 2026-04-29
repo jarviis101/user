@@ -1,14 +1,15 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"user/internal/app/entity"
 )
 
 type UserRepository interface {
-	Store(firstName, lastName, email, phone string) (*entity.User, error)
-	FindByCriteria(filter entity.UserFilter) ([]entity.User, error)
+	Store(ctx context.Context, firstName, lastName, email, phone string) (*entity.User, error)
+	FindByCriteria(ctx context.Context, filter entity.UserFilter) ([]entity.User, error)
 }
 
 type userRepository struct {
@@ -19,7 +20,7 @@ func NewUserRepository(connection *sql.DB) UserRepository {
 	return &userRepository{connection}
 }
 
-func (r *userRepository) Store(firstName, lastName, email, phone string) (*entity.User, error) {
+func (r *userRepository) Store(ctx context.Context, firstName, lastName, email, phone string) (*entity.User, error) {
 	query := `
 		INSERT INTO users (first_name, last_name, email, phone) VALUES ($1, $2, $3, $4)
 		RETURNING id, first_name, last_name, email, phone, created_at, updated_at
@@ -43,7 +44,7 @@ func (r *userRepository) Store(firstName, lastName, email, phone string) (*entit
 	return &user, nil
 }
 
-func (r *userRepository) FindByCriteria(filter entity.UserFilter) ([]entity.User, error) {
+func (r *userRepository) FindByCriteria(ctx context.Context, filter entity.UserFilter) ([]entity.User, error) {
 	var wb whereBuilder
 
 	if filter.ID != nil {
