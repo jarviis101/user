@@ -13,5 +13,7 @@ type User struct {
 }
 
 type UserFilter struct {
-	ID *int64
+	ID     *int64
+	Limit  int
+	Offset int
 }

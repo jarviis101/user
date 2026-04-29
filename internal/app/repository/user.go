@@ -45,15 +45,18 @@ func (r *userRepository) Store(ctx context.Context, firstName, lastName, email, 
 }
 
 func (r *userRepository) FindByCriteria(ctx context.Context, filter entity.UserFilter) ([]entity.User, error) {
-	var wb whereBuilder
+	var qb queryBuilder
 
 	if filter.ID != nil {
-		wb.add("id = $%d", *filter.ID)
+		qb.addWhere("id = $%d", *filter.ID)
 	}
 
-	query := `SELECT id, first_name, last_name, email, phone, created_at, updated_at FROM users` + wb.clause()
+	query := `SELECT id, first_name, last_name, email, phone, created_at, updated_at FROM users` +
+		qb.clause() +
+		` ORDER BY id` +
+		qb.pagination(filter.Limit, filter.Offset)
 
-	rows, err := r.connection.Query(query, wb.args...)
+	rows, err := r.connection.Query(query, qb.args...)
 
 	if err != nil {
 		return nil, err

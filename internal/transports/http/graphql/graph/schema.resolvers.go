@@ -30,8 +30,17 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 }
 
 // Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{})
+func (r *queryResolver) Users(ctx context.Context, page *int, itemsPerPage *int) ([]*model.User, error) {
+	p := *page
+	c := *itemsPerPage
+
+	offset := (p - 1) * c
+	limit := c
+
+	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{
+		Limit:  limit,
+		Offset: offset,
+	})
 
 	if err != nil {
 		return nil, err

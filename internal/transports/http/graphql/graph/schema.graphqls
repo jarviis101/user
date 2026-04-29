@@ -13,7 +13,7 @@ type User {
 }
 
 type Query {
-    users: [User]!
+    users(page: Int = 1, itemsPerPage: Int = 10): [User]!
     user(id: ID!): User
 }
 
