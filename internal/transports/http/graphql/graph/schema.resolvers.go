@@ -76,7 +76,7 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 		return nil, err
 	}
 
-	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{ID: &userId})
+	users, err := r.services.UserProvider().ByCriteria(ctx, entity.UserFilter{ID: &userId, Limit: 1, Offset: 0})
 
 	if err != nil {
 		return nil, err

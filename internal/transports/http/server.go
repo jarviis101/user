@@ -2,7 +2,9 @@ package http
 
 import (
 	"context"
+	"fmt"
 	"user/internal/container"
+	"user/internal/infrastructure/config"
 	"user/internal/transports/http/graphql"
 	"user/internal/transports/http/graphql/graph"
 
@@ -19,18 +21,19 @@ type Server interface {
 type server struct {
 	server    *echo.Echo
 	container *container.Container
+	config    *config.Config
 }
 
-func NewServer(container *container.Container) Server {
+func NewServer(container *container.Container, config *config.Config) Server {
 	s := echo.New()
 
-	return &server{s, container}
+	return &server{s, container, config}
 }
 
 func (s *server) Run() error {
 	s.injectGraphqlRoutes(s.server)
 
-	return s.server.Start(":8000")
+	return s.server.Start(fmt.Sprintf("%s:%s", s.config.Host, s.config.Port))
 }
 
 func (s *server) Shutdown(ctx context.Context) error {

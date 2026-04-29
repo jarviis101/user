@@ -12,7 +12,7 @@ import (
 
 	"user/internal/container"
 	"user/internal/infrastructure/config"
-	httpTransport "user/internal/transports/http"
+	http_transport "user/internal/transports/http"
 )
 
 type Application interface {
@@ -41,7 +41,7 @@ func NewApp() (Application, error) {
 }
 
 func (a *app) Run() error {
-	server := httpTransport.NewServer(a.container)
+	server := http_transport.NewServer(a.container, a.config)
 
 	serverError := make(chan error, 1)
 	go func() {
