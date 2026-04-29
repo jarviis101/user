@@ -7,7 +7,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"strconv"
 	"user/internal/app/entity"
 	"user/internal/transports/http/graphql/graph/model"
@@ -32,7 +31,32 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUse
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
+	users, err := r.services.UserProvider().ByCriteria(entity.UserFilter{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(users) == 0 {
+		return nil, nil
+	}
+
+	result := make([]*model.User, 0, len(users))
+
+	for _, user := range users {
+		result = append(
+			result,
+			&model.User{
+				ID:        strconv.FormatInt(user.ID, 10),
+				FirstName: user.FirstName,
+				LastName:  user.LastName,
+				Email:     user.Email,
+				Phone:     user.Phone,
+			},
+		)
+	}
+
+	return result, nil
 }
 
 // User is the resolver for the user field.
