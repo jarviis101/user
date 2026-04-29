@@ -27,7 +27,7 @@ func (r *userRepository) Store(ctx context.Context, firstName, lastName, email, 
 	`
 	var user entity.User
 
-	err := r.connection.QueryRow(query, firstName, lastName, email, phone).Scan(
+	err := r.connection.QueryRowContext(ctx, query, firstName, lastName, email, phone).Scan(
 		&user.ID,
 		&user.FirstName,
 		&user.LastName,
@@ -56,7 +56,7 @@ func (r *userRepository) FindByCriteria(ctx context.Context, filter entity.UserF
 		` ORDER BY id` +
 		qb.pagination(filter.Limit, filter.Offset)
 
-	rows, err := r.connection.Query(query, qb.args...)
+	rows, err := r.connection.QueryContext(ctx, query, qb.args...)
 
 	if err != nil {
 		return nil, err
