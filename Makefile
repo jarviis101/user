@@ -1,18 +1,20 @@
 include .env
 export
 
+GOOSE=go run github.com/pressly/goose/v3/cmd/goose@v3.27.1
+
 migration-create:
 	@read -p "Enter migration name: " name; \
-	goose -dir migrations create $$name sql
+	$(GOOSE) -dir migrations create $$name sql
 
 migration-up:
-	goose -dir migrations postgres "$(DATABASE_DSN)" up
+	$(GOOSE) -dir migrations postgres "$(DATABASE_DSN)" up
 
 migration-down:
-	goose -dir migrations postgres "$(DATABASE_DSN)" down
+	$(GOOSE) -dir migrations postgres "$(DATABASE_DSN)" down
 
 migration-status:
-	goose -dir migrations postgres "$(DATABASE_DSN)" status
+	$(GOOSE) -dir migrations postgres "$(DATABASE_DSN)" status
 
 generate:
 	go generate ./...
