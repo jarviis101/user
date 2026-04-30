@@ -6,7 +6,7 @@ A Go-based microservice for user management, exposing a GraphQL API backed by Po
 
 | Name       | Version  | Description                        |
 |------------|----------|------------------------------------|
-| Go         | 1.25     | Primary language                   |
+| Go         | 1.26.2   | Primary language                   |
 | PostgreSQL | 16       | Relational database                |
 | GraphQL    | gqlgen   | API layer (queries & mutations)    |
 | Echo       | v4       | HTTP server framework              |
