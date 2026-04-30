@@ -9,7 +9,6 @@ import (
 	"user/internal/transports/http/graphql/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
-	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/labstack/echo/v4"
 )
 
@@ -45,9 +44,7 @@ func (s *server) injectGraphqlRoutes(e *echo.Echo) {
 	config := graph.Config{Resolvers: resolver}
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(config))
-	playground := playground.Handler("GraphQL playground", "/query")
-
-	graphql := graphql.NewGraphqlRouter(e.Group(""), srv, playground)
+	graphql := graphql.NewGraphqlRouter(e.Group(""), srv, s.config)
 
 	graphql.Populate()
 }
