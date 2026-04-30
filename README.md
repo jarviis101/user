@@ -10,7 +10,7 @@ A Go-based microservice for user management, exposing a GraphQL API backed by Po
 | PostgreSQL | 16       | Relational database                |
 | GraphQL    | gqlgen   | API layer (queries & mutations)    |
 | Echo       | v4       | HTTP server framework              |
-| Goose      | latest   | Database migration tool            |
+| Goose      | 3.27.1   | Database migration tool            |
 
 ## Requirements
 
