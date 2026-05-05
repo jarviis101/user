@@ -1,16 +1,18 @@
 # User Microservice API
 
-A Go-based microservice for user management, exposing a GraphQL API backed by PostgreSQL.
+A Go-based microservice for user management with dual transport support: GraphQL (HTTP) and gRPC, backed by PostgreSQL.
 
 ## Stack
 
-| Name       | Version  | Description                        |
-|------------|----------|------------------------------------|
-| Go         | 1.26.2   | Primary language                   |
-| PostgreSQL | 16       | Relational database                |
-| GraphQL    | gqlgen   | API layer (queries & mutations)    |
-| Echo       | v4       | HTTP server framework              |
-| Goose      | 3.27.1   | Database migration tool            |
+| Name       | Version   | Description                        |
+|------------|-----------|------------------------------------|
+| Go         | 1.26.2    | Primary language                   |
+| PostgreSQL | 16        | Relational database                |
+| Echo       | v4        | HTTP server framework              |
+| GraphQL    | gqlgen    | GraphQL API layer                  |
+| gRPC       | v1.81.0   | High-performance RPC framework     |
+| pgx        | v5.9.2    | Native PostgreSQL driver           |
+| Goose      | v3.27.1   | Database migration tool            |
 
 ## Requirements
 
@@ -21,21 +23,35 @@ A Go-based microservice for user management, exposing a GraphQL API backed by Po
 
 ## Environment variables
 
-| Variable       | Description                          |
-|----------------|--------------------------------------|
-| `APP_KEY`      | Application secret key               |
-| `APP_HOST`     | Server host (e.g. `0.0.0.0`)        |
-| `APP_PORT`     | Server port (e.g. `8080`)           |
-| `APP_DEBUG`    | Debug mode (`true` / `false`)        |
-| `DATABASE_DSN` | PostgreSQL DSN connection string     |
+| Variable       | Default                                                       | Description                      |
+|----------------|---------------------------------------------------------------|----------------------------------|
+| `APP_KEY`      | —                                                             | API authentication key (required)|
+| `APP_HOST`     | `localhost`                                                   | Server host                      |
+| `APP_PORT`     | `8000`                                                        | Server port                      |
+| `APP_DEBUG`    | `1`                                                           | Enable GraphQL Playground        |
+| `DATABASE_DSN` | `postgres://user:password@localhost:5432/user?sslmode=disable`| PostgreSQL connection string     |
 
-## Local deployment
+## Local setup
 
 ```bash
 cp .env.example .env
 # fill in the required environment variables
 
-docker compose up -d       
-make migration-up           
-go run cmd/app/main.go     
+docker compose up -d    # start PostgreSQL
+make migration-up       # apply database migrations
+
+go run cmd/http/main.go # start HTTP server (GraphQL)
+# or
+go run cmd/grpc/main.go # start gRPC server
 ```
+
+## Make targets
+
+| Command               | Description                        |
+|-----------------------|------------------------------------|
+| `make migration-create` | Create a new migration file      |
+| `make migration-up`     | Apply pending migrations          |
+| `make migration-down`   | Roll back the last migration      |
+| `make migration-status` | Show migration status             |
+| `make generate`         | Regenerate GraphQL & protobuf code|
+| `make lint`             | Run golangci-lint                 |
