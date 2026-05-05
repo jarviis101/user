@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	app, err := internal.NewApp()
+	app, err := internal.NewHttpApp()
 	if err != nil {
 		log.Fatalln(err)
 	}

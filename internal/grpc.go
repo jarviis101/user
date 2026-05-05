@@ -5,14 +5,13 @@ import (
 	"net"
 	"user/internal/container"
 	"user/internal/infrastructure/config"
-	"user/proto/user/userpb"
-
 	grpc_transport "user/internal/transports/grpc"
+	"user/proto/user/userpb"
 
 	grpc_server "google.golang.org/grpc"
 )
 
-type grpc struct {
+type grpcApp struct {
 	config    *config.Config
 	container *container.Container
 }
@@ -30,10 +29,10 @@ func NewGrpcApp() (Application, error) {
 		return nil, err
 	}
 
-	return &grpc{config, container}, nil
+	return &grpcApp{config, container}, nil
 }
 
-func (a *grpc) Run() error {
+func (a *grpcApp) Run() error {
 	server := grpc_server.NewServer()
 
 	userpb.RegisterUserServiceServer(server, &grpc_transport.UserService{

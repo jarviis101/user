@@ -19,12 +19,12 @@ type Application interface {
 	Run() error
 }
 
-type app struct {
+type httpApp struct {
 	config    *config.Config
 	container *container.Container
 }
 
-func NewApp() (Application, error) {
+func NewHttpApp() (Application, error) {
 	config, err := config.LoadConfig()
 
 	if err != nil {
@@ -37,10 +37,10 @@ func NewApp() (Application, error) {
 		return nil, err
 	}
 
-	return &app{config, container}, nil
+	return &httpApp{config, container}, nil
 }
 
-func (a *app) Run() error {
+func (a *httpApp) Run() error {
 	server := http_transport.NewServer(a.container, a.config)
 
 	serverError := make(chan error, 1)
